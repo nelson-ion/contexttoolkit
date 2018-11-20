@@ -30,26 +30,24 @@ public class RoomEnactor extends Enactor {
 		// light off
 		AbstractQueryItem<?, ?> offQI = 
 			new ORQueryItem(
-					RuleQueryItem.instance(
-							new NonConstantAttributeElement(AttributeNameValue.instance("presence", 0))), // equal to 0; no one in the room, OR
-					RuleQueryItem.instance(
-							new NonConstantAttributeElement(AttributeNameValue.instance("brightness", BRIGHTNESS_THRESHOLD)), 
-							new AttributeComparison(AttributeComparison.Comparison.GREATER)) // brightness more than BRIGHTNESS_THRESHOLD
-					);
-		EnactorReference er = new RoomEnactorReference( 
-				offQI, 
-				LightWidget.LIGHT_OFF);
+					
+					RuleQueryItem.instance(new NonConstantAttributeElement(AttributeNameValue.instance("presence", 0))), // equal to 0; no one in the room, OR
+					
+					RuleQueryItem.instance(new NonConstantAttributeElement(AttributeNameValue.instance("brightness", BRIGHTNESS_THRESHOLD)), new AttributeComparison(AttributeComparison.Comparison.GREATER)) // brightness more than BRIGHTNESS_THRESHOLD
+			);
+		
+		
+		EnactorReference er = new RoomEnactorReference(offQI, LightWidget.LIGHT_OFF);
+		
 		er.addServiceInput(new ServiceInput("LightService", "lightOff"));
+		
 		addReference(er);
 		
 		// light on, and brightness dependent
-		er = new RoomEnactorReference( 
-				new ElseQueryItem(offQI), 
-				LightWidget.LIGHT_ON);
-		er.addServiceInput(new ServiceInput("LightService", "lightOn", 
-				new Attributes() {{
-					addAttribute("light", Integer.class);
-				}}));
+		er = new RoomEnactorReference(new ElseQueryItem(offQI), LightWidget.LIGHT_ON);
+		
+		er.addServiceInput(new ServiceInput("LightService", "lightOn", new Attributes() {{ addAttribute("light", Integer.class); }}));
+		
 		addReference(er);
 		
 		start();
@@ -71,7 +69,9 @@ public class RoomEnactor extends Enactor {
 		
 		@Override
 		protected Attributes conditionSatisfied(ComponentDescription inWidgetState, Attributes outAtts) {
+			
 			long timestamp = outAtts.getAttributeValue(Widget.TIMESTAMP);
+			
 			WidgetData data = new WidgetData("LightWidget", timestamp);
 			
 			if (outcomeValue == LightWidget.LIGHT_ON) {
@@ -96,7 +96,8 @@ public class RoomEnactor extends Enactor {
 			data.setAttributeValue(LightWidget.LIGHT, light);
 			
 			outAtts.putAll(data.toAttributes());
-	        return outAtts;
+	       
+			return outAtts;
 		}
 		
 	}

@@ -33,7 +33,8 @@ public class LightService extends Service {
 								"Sets the light level of the lamp", 
 								widget.getNonConstantAttributes()));
 					}
-				});
+				}
+		);
 		
 		/*
 		 * set up light label (for use in a UI)
